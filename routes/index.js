@@ -1,5 +1,13 @@
 const router = require('express').Router();
+
+
 router.get('/', (req, res) => {
     //swagger.tags-['Hello World']
     res.send('Hello World');});
-    module.exports = router;
+
+router.use('/personal_info', require('./personal_info.js'));
+
+//router.use('/employment_details', require('./employment_details.js'));
+
+module.exports = router;
+
