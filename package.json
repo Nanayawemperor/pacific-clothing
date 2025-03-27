@@ -17,5 +17,8 @@
     "url": "https://github.com/Nanayawemperor/pacific-clothing/issues"
   },
   "homepage": "https://github.com/Nanayawemperor/pacific-clothing#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
 }
