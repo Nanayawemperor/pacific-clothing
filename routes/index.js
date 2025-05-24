@@ -8,6 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.use('/employees', require('./employees'));
-//router.use('/departments', require('./departments'));
+router.use('/departments', require('./departments'));
 
 module.exports = router;
+

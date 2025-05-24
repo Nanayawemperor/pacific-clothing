@@ -1,119 +1,165 @@
 const express = require('express');
 const router = express.Router();
-const { body, validationResult } = require('express-validator');
 const employeesController = require('../controllers/employees');
-
-/**
- * Middleware to handle validation errors
- */
-function validateRequest(req, res, next) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-}
 
 /**
  * @swagger
  * tags:
  *   name: Employees
- *   description: API for managing employees
+ *   description: API for employees management
  */
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Employee:
- *       type: object
- *       required:
- *         - name
- *         - departmentId
- *       properties:
- *         _id:
- *           type: string
- *           description: Unique identifier
- *         name:
- *           type: string
- *           description: Employee's full name
- *         departmentId:
- *           type: string
- *           description: ID of the employee's department
- *       example:
- *         _id: 60af884f4f1a2a1a4c9e9f1a
- *         name: John Doe
- *         departmentId: 60af884f4f1a2a1a4c9e9f1b
+ * /employees:
+ *   get:
+ *     summary: Get all employees
+ *     tags: [Employees]
+ *     responses:
+ *       200:
+ *         description: List of employees
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                   firstName:
+ *                     type: string
+ *                   lastName:
+ *                     type: string
+ *                   position:
+ *                     type: string
+ *                   department:
+ *                     type: string
  */
+router.get('/', employeesController.getAll);
 
-// GET all employees
-router.get('/', async (req, res) => {
-  try {
-    const employees = await employeesController.getAll();
-    res.json(employees);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error retrieving employees' });
-  }
-});
+/**
+ * @swagger
+ * /employees/{id}:
+ *   get:
+ *     summary: Get an employee by ID
+ *     tags: [Employees]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Employee ID
+ *     responses:
+ *       200:
+ *         description: Employee found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                 firstName:
+ *                   type: string
+ *                 lastName:
+ *                   type: string
+ *                 position:
+ *                   type: string
+ *                 department:
+ *                   type: string
+ *       404:
+ *         description: Employee not found
+ */
+router.get('/:id', employeesController.getSingle);
 
-// GET single employee by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const employee = await employeesController.getSingle(req.params.id);
-    if (!employee) return res.status(404).json({ message: 'Employee not found' });
-    res.json(employee);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error retrieving employee' });
-  }
-});
+/**
+ * @swagger
+ * /employees:
+ *   post:
+ *     summary: Create a new employee
+ *     tags: [Employees]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *               - position
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               position:
+ *                 type: string
+ *               department:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Employee created
+ *       400:
+ *         description: Invalid input
+ */
+router.post('/', employeesController.createEmployee);
 
-// POST create new employee
-router.post(
-  '/',
-  body('name').trim().notEmpty().withMessage('Name is required'),
-  body('departmentId').trim().notEmpty().withMessage('Department ID is required'),
-  validateRequest,
-  async (req, res) => {
-    try {
-      const newEmployee = await employeesController.createEmployee(req.body);
-      res.status(201).json(newEmployee);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error creating employee' });
-    }
-  }
-);
+/**
+ * @swagger
+ * /employees/{id}:
+ *   put:
+ *     summary: Update an employee
+ *     tags: [Employees]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               position:
+ *                 type: string
+ *               department:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Employee updated
+ *       404:
+ *         description: Employee not found
+ */
+router.put('/:id', employeesController.updateEmployee);
 
-// PUT update employee by ID
-router.put(
-  '/:id',
-  body('name').optional().trim().notEmpty().withMessage('Name cannot be empty'),
-  body('departmentId').optional().trim().notEmpty().withMessage('Department ID cannot be empty'),
-  validateRequest,
-  async (req, res) => {
-    try {
-      const updatedEmployee = await employeesController.updateEmployee(req.params.id, req.body);
-      if (!updatedEmployee) return res.status(404).json({ message: 'Employee not found' });
-      res.json(updatedEmployee);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error updating employee' });
-    }
-  }
-);
-
-// DELETE employee by ID
-router.delete('/:id', async (req, res) => {
-  try {
-    const deleted = await employeesController.deleteEmployee(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Employee not found' });
-    res.status(204).send();
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error deleting employee' });
-  }
-});
+/**
+ * @swagger
+ * /employees/{id}:
+ *   delete:
+ *     summary: Delete an employee
+ *     tags: [Employees]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Employee deleted
+ *       404:
+ *         description: Employee not found
+ */
+router.delete('/:id', employeesController.deleteEmployee);
 
 module.exports = router;
