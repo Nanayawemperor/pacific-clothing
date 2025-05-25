@@ -1,10 +1,7 @@
 const express = require('express');
-const bodyParser = require('body-parser')
 const app = express();
 const swaggerUi = require('swagger-ui-express');
-const swaggerJsDoc = require('swagger-jsdoc')
-
-
+const swaggerJsDoc = require('swagger-jsdoc');
 const mongodb = require('./data/database');
 const port = process.env.PORT || 3030;
 
@@ -17,37 +14,34 @@ const swaggerOptions = {
       description: 'API for managing Pacific Clothing data'
     },
     servers: [
-      { url: `http://localhost:${port}` }
+      { url: `http://localhost:${port}` }  // Dynamic port based on environment
     ],
     components: {
       schemas: {
         Employee: {
           type: 'object',
           properties: {
-            _id: { type: 'string', description: 'Employee ID' },
-            name: { type: 'string', description: 'Employee name' },
-            position: { type: 'string', description: 'Employee position' },
-            department: { type: 'string', description: 'Employee department' }
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            position: { type: 'string' },
+            department: { type: 'string' }
           },
           required: ['name', 'position', 'department']
         }
       }
     }
   },
-  apis: ['./routes/*.js']  // or adjust path if needed
+  apis: ['./routes/*.js']
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// Mount routes
 app.use('/', require('./routes'));
 
-
-mongodb.initDb((err) => {
-    if (err) {
-        console.log(err);
-    }
-    else {
-        app.listen(port, () => {console.log(`Database is listening and running on port ${port}`)});
-    }
-})
+// Start server and DB connection
+mongodb.initDb(err => {
+  if (err) console.log(err);
+  else app.listen(port, () => console.log(`Server running at http://localhost:${port} with DB`));
+});

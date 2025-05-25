@@ -28,4 +28,4 @@ Content-Type: application/json
   }
 
 ### Delete department
-DELETE http://localhost:3030/departments/6830ce743124b96be28ca723 HTTP/1.1
+DELETE http://localhost:3030/departments/682e3ed2a06cf5069269e951 HTTP/1.1
