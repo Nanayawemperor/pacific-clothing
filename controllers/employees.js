@@ -38,7 +38,6 @@ const getSingle = async (req, res) => {
 };
 
 const createEmployee = async (req, res) => {
-  try {
     const employee = {
       fullName: req.body.fullName,
       phoneNumber: req.body.phoneNumber,
@@ -48,20 +47,12 @@ const createEmployee = async (req, res) => {
       role: req.body.role,
       address: req.body.address,
     };
-
     const response = await mongodb.getDatabase().db().collection('employees').insertOne(employee);
-
     if (response.acknowledged) {
-      // Return created employee with 201 status
-      const createdEmployee = await mongodb.getDatabase().db().collection('employees').findOne({ _id: response.insertedId });
-      return res.status(201).json(createdEmployee);
+      return res.status(200).json({ message: 'Department created successfully.' });
     } else {
       return res.status(500).json({ message: 'Failed to create employee.' });
     }
-  } catch (error) {
-    console.error('Error creating employee:', error);
-    res.status(500).json({ message: 'Failed to create employee.' });
-  }
 };
 
 const updateEmployee = async (req, res) => {
@@ -76,13 +67,10 @@ const updateEmployee = async (req, res) => {
       role: req.body.role,
       address: req.body.address,
     };
-
     const response = await mongodb.getDatabase().db().collection('employees').replaceOne({ _id: employeeId }, employee);
-
     if (response.matchedCount === 0) {
       return res.status(404).json({ message: 'Employee not found.' });
     }
-
     if (response.modifiedCount > 0) {
       return res.status(200).json({ message: 'Employee updated successfully.' });
     } else {
@@ -100,7 +88,7 @@ const deleteEmployee = async (req, res) => {
     const response = await mongodb.getDatabase().db().collection('employees').deleteOne({ _id: employeeId });
 
     if (response.deletedCount > 0) {
-      return res.status(204).send();
+      return res.status(200).json({ message: 'Employee deleted successfully.' });
     } else {
       return res.status(404).json({ message: 'Employee not found.' });
     }

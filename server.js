@@ -1,10 +1,12 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+const mongodb = require('./data/database');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-const mongodb = require('./data/database');
 const port = process.env.PORT || 3030;
 
+// ✅ Swagger Setup
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
@@ -14,34 +16,31 @@ const swaggerOptions = {
       description: 'API for managing Pacific Clothing data'
     },
     servers: [
-      { url: `http://localhost:${port}` }  // Dynamic port based on environment
-    ],
-    components: {
-      schemas: {
-        Employee: {
-          type: 'object',
-          properties: {
-            _id: { type: 'string' },
-            name: { type: 'string' },
-            position: { type: 'string' },
-            department: { type: 'string' }
-          },
-          required: ['name', 'position', 'department']
-        }
-      }
-    }
+      { url: `http://localhost:${port}` }  // Make sure this port matches!
+    ]
   },
-  apis: ['./routes/*.js']
+  apis: ['./routes/*.js'],  // Adjust if your route docs are in a different folder
 };
-
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));  // ✅ Swagger Route
 
-// Mount routes
+// ✅ Body parser middleware
+app.use(bodyParser.json());
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Z-Key'
+  );
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  next();
+});
+
+// ✅ Mount routes AFTER Swagger and middleware
 app.use('/', require('./routes'));
 
-// Start server and DB connection
+// ✅ Start server and DB connection
 mongodb.initDb(err => {
   if (err) console.log(err);
-  else app.listen(port, () => console.log(`Server running at http://localhost:${port} with DB`));
+  else app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
 });

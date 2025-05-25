@@ -13,7 +13,7 @@ Content-Type: application/json
   "fullName": "Beatrice Achia",
   "phoneNumber": "0571475607",
   "hireDate": 2024,
-  "department": "Finishing",
+  "department": "Embroidery",
   "employmentStatus": "Permanent",
   "role": "Trimmer",
   "address": "Darkuman"
@@ -24,7 +24,7 @@ PUT http://localhost:3030/employees/6830c86551c713cd45467c78 HTTP/1.1
 Content-Type: application/json
 
 {
-    "fullName": "Beatrice Achia",
+    "fullName": "Ama",
   "phoneNumber": "0571475607",
   "hireDate": 2024,
   "department": "Embroidery",
@@ -34,4 +34,4 @@ Content-Type: application/json
   }
 
 ### Delete employee
-DELETE http://localhost:3030/employees/6830c83251c713cd45467c77 HTTP/1.1
+DELETE http://localhost:3030/employees/683330d1145fc459d285c20b HTTP/1.1
