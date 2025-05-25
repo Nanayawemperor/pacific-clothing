@@ -61,13 +61,19 @@ router.get('/', employeesController.getAll);
  *               properties:
  *                 _id:
  *                   type: string
- *                 firstName:
+ *                 fullName:
  *                   type: string
- *                 lastName:
+ *                 phoneNumber:
  *                   type: string
- *                 position:
+ *                 hireDate:
  *                   type: string
  *                 department:
+ *                   type: string
+ *                 employmentStatus:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 address:
  *                   type: string
  *       404:
  *         description: Employee not found
@@ -87,17 +93,27 @@ router.get('/:id', employeesController.getSingle);
  *           schema:
  *             type: object
  *             required:
- *               - firstName
- *               - lastName
- *               - position
+ *               - fullName
+ *               - phoneNumber
+ *               - hireDate
+ *               - department
+ *               - employmentStatus
+ *               - role
+ *               - address
  *             properties:
- *               firstName:
+ *               fullName:
  *                 type: string
- *               lastName:
+ *               phoneNumber:
  *                 type: string
- *               position:
+ *               hireDate:
  *                 type: string
  *               department:
+ *                 type: string
+ *               employmentStatus:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *               address:
  *                 type: string
  *     responses:
  *       201:
@@ -126,13 +142,19 @@ router.post('/', employeesController.createEmployee);
  *           schema:
  *             type: object
  *             properties:
- *               firstName:
+ *               fullName:
  *                 type: string
- *               lastName:
+ *               phoneNumber:
  *                 type: string
- *               position:
+ *               hireDate:
  *                 type: string
  *               department:
+ *                 type: string
+ *               employmentStatus:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *               address:
  *                 type: string
  *     responses:
  *       200:

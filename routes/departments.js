@@ -27,13 +27,13 @@ const departmentsController = require('../controllers/departments');
  *                 properties:
  *                   _id:
  *                     type: string
- *                   firstName:
+ *                   departmentName:
  *                     type: string
- *                   lastName:
+ *                   manager:
  *                     type: string
- *                   position:
- *                     type: string
- *                   department:
+ *                   totalEmployees:
+ *                     type: integer
+ *                   location:
  *                     type: string
  */
 router.get('/', departmentsController.getAll);
@@ -42,7 +42,7 @@ router.get('/', departmentsController.getAll);
  * @swagger
  * /departments/{id}:
  *   get:
- *     summary: Get an department by ID
+ *     summary: Get a department by ID
  *     tags: [departments]
  *     parameters:
  *       - in: path
@@ -53,7 +53,7 @@ router.get('/', departmentsController.getAll);
  *         description: department ID
  *     responses:
  *       200:
- *         description: department found
+ *         description: Department found
  *         content:
  *           application/json:
  *             schema:
@@ -61,16 +61,16 @@ router.get('/', departmentsController.getAll);
  *               properties:
  *                 _id:
  *                   type: string
- *                 firstName:
+ *                 departmentName:
  *                   type: string
- *                 lastName:
+ *                 manager:
  *                   type: string
- *                 position:
- *                   type: string
- *                 department:
+ *                 totalEmployees:
+ *                   type: integer
+ *                 location:
  *                   type: string
  *       404:
- *         description: department not found
+ *         description: Department not found
  */
 router.get('/:id', departmentsController.getSingle);
 
@@ -87,21 +87,22 @@ router.get('/:id', departmentsController.getSingle);
  *           schema:
  *             type: object
  *             required:
- *               - firstName
- *               - lastName
- *               - position
+ *               - departmentName
+ *               - manager
+ *               - totalEmployees
+ *               - location
  *             properties:
- *               firstName:
+ *               departmentName:
  *                 type: string
- *               lastName:
+ *               manager:
  *                 type: string
- *               position:
- *                 type: string
- *               department:
+ *               totalEmployees:
+ *                 type: integer
+ *               location:
  *                 type: string
  *     responses:
  *       201:
- *         description: department created
+ *         description: Department created
  *       400:
  *         description: Invalid input
  */
@@ -111,7 +112,7 @@ router.post('/', departmentsController.createDepartment);
  * @swagger
  * /departments/{id}:
  *   put:
- *     summary: Update an department
+ *     summary: Update a department
  *     tags: [departments]
  *     parameters:
  *       - in: path
@@ -126,19 +127,19 @@ router.post('/', departmentsController.createDepartment);
  *           schema:
  *             type: object
  *             properties:
- *               firstName:
+ *               departmentName:
  *                 type: string
- *               lastName:
+ *               manager:
  *                 type: string
- *               position:
- *                 type: string
- *               department:
+ *               totalEmployees:
+ *                 type: integer
+ *               location:
  *                 type: string
  *     responses:
  *       200:
- *         description: department updated
+ *         description: Department updated
  *       404:
- *         description: department not found
+ *         description: Department not found
  */
 router.put('/:id', departmentsController.updateDepartment);
 
@@ -146,7 +147,7 @@ router.put('/:id', departmentsController.updateDepartment);
  * @swagger
  * /departments/{id}:
  *   delete:
- *     summary: Delete an department
+ *     summary: Delete a department
  *     tags: [departments]
  *     parameters:
  *       - in: path
@@ -156,11 +157,10 @@ router.put('/:id', departmentsController.updateDepartment);
  *           type: string
  *     responses:
  *       200:
- *         description: department deleted
+ *         description: Department deleted
  *       404:
- *         description: department not found
+ *         description: Department not found
  */
 router.delete('/:id', departmentsController.deleteDepartment);
 
 module.exports = router;
-

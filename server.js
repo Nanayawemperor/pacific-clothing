@@ -4,7 +4,7 @@ const app = express();
 const mongodb = require('./data/database');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-const port = process.env.PORT || 3030;
+const port = process.env.PORT || 10000;
 
 // ✅ Swagger Setup
 const swaggerOptions = {

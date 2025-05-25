@@ -5,7 +5,7 @@ const doc ={
         title: 'Pacific CLothing Api',
         description: 'Pacific CLothing Api'
     },
-    host: 'localhost:3030',
+    host: 'localhost:10000',
     schemes: ['http', 'https']
 };
 
