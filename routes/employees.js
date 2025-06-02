@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const { body, param, validationResult } = require('express-validator');
 const employeesController = require('../controllers/employees');
+
+// Middleware to handle validation errors
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
 
 /**
  * @swagger
@@ -23,18 +33,9 @@ const employeesController = require('../controllers/employees');
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   _id:
- *                     type: string
- *                   firstName:
- *                     type: string
- *                   lastName:
- *                     type: string
- *                   position:
- *                     type: string
- *                   department:
- *                     type: string
+ *                 $ref: '#/components/schemas/Employee'
+ *       500:
+ *         description: Server error
  */
 router.get('/', employeesController.getAll);
 
@@ -50,35 +51,27 @@ router.get('/', employeesController.getAll);
  *         required: true
  *         schema:
  *           type: string
- *         description: Employee ID
+ *         description: Employee ID (MongoDB ObjectId)
  *     responses:
  *       200:
  *         description: Employee found
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                 fullName:
- *                   type: string
- *                 phoneNumber:
- *                   type: string
- *                 hireDate:
- *                   type: string
- *                 department:
- *                   type: string
- *                 employmentStatus:
- *                   type: string
- *                 role:
- *                   type: string
- *                 address:
- *                   type: string
+ *               $ref: '#/components/schemas/Employee'
+ *       400:
+ *         description: Invalid ID format
  *       404:
  *         description: Employee not found
+ *       500:
+ *         description: Server error
  */
-router.get('/:id', employeesController.getSingle);
+router.get(
+  '/:id',
+  param('id').isMongoId().withMessage('Invalid employee ID'),
+  handleValidationErrors,
+  employeesController.getSingle
+);
 
 /**
  * @swagger
@@ -91,43 +84,33 @@ router.get('/:id', employeesController.getSingle);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - fullName
- *               - phoneNumber
- *               - hireDate
- *               - department
- *               - employmentStatus
- *               - role
- *               - address
- *             properties:
- *               fullName:
- *                 type: string
- *               phoneNumber:
- *                 type: string
- *               hireDate:
- *                 type: string
- *               department:
- *                 type: string
- *               employmentStatus:
- *                 type: string
- *               role:
- *                 type: string
- *               address:
- *                 type: string
+ *             $ref: '#/components/schemas/Employee'
  *     responses:
  *       201:
- *         description: Employee created
+ *         description: Employee created successfully
  *       400:
- *         description: Invalid input
+ *         description: Validation error
+ *       500:
+ *         description: Server error
  */
-router.post('/', employeesController.createEmployee);
+router.post(
+  '/',
+  body('fullName').isString().notEmpty().withMessage('Full name is required'),
+  body('phoneNumber').isString().notEmpty().withMessage('Phone number is required'),
+  body('hireDate').isISO8601().withMessage('Hire date must be a valid date'),
+  body('department').isString().notEmpty().withMessage('Department is required'),
+  body('employmentStatus').isString().notEmpty().withMessage('Employment status is required'),
+  body('role').isString().notEmpty().withMessage('Role is required'),
+  body('address').isString().notEmpty().withMessage('Address is required'),
+  handleValidationErrors,
+  employeesController.createEmployee
+);
 
 /**
  * @swagger
  * /employees/{id}:
  *   put:
- *     summary: Update an employee
+ *     summary: Update an employee by ID
  *     tags: [Employees]
  *     parameters:
  *       - in: path
@@ -135,40 +118,42 @@ router.post('/', employeesController.createEmployee);
  *         required: true
  *         schema:
  *           type: string
+ *         description: Employee ID (MongoDB ObjectId)
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               fullName:
- *                 type: string
- *               phoneNumber:
- *                 type: string
- *               hireDate:
- *                 type: string
- *               department:
- *                 type: string
- *               employmentStatus:
- *                 type: string
- *               role:
- *                 type: string
- *               address:
- *                 type: string
+ *             $ref: '#/components/schemas/Employee'
  *     responses:
  *       200:
- *         description: Employee updated
+ *         description: Employee updated successfully or no changes made
+ *       400:
+ *         description: Validation error or invalid ID
  *       404:
  *         description: Employee not found
+ *       500:
+ *         description: Server error
  */
-router.put('/:id', employeesController.updateEmployee);
+router.put(
+  '/:id',
+  param('id').isMongoId().withMessage('Invalid employee ID'),
+  body('fullName').optional().isString(),
+  body('phoneNumber').optional().isString(),
+  body('hireDate').optional().isISO8601(),
+  body('department').optional().isString(),
+  body('employmentStatus').optional().isString(),
+  body('role').optional().isString(),
+  body('address').optional().isString(),
+  handleValidationErrors,
+  employeesController.updateEmployee
+);
 
 /**
  * @swagger
  * /employees/{id}:
  *   delete:
- *     summary: Delete an employee
+ *     summary: Delete an employee by ID
  *     tags: [Employees]
  *     parameters:
  *       - in: path
@@ -176,12 +161,23 @@ router.put('/:id', employeesController.updateEmployee);
  *         required: true
  *         schema:
  *           type: string
+ *         description: Employee ID (MongoDB ObjectId)
  *     responses:
  *       200:
- *         description: Employee deleted
+ *         description: Employee deleted successfully
+ *       400:
+ *         description: Invalid ID format
  *       404:
  *         description: Employee not found
+ *       500:
+ *         description: Server error
  */
-router.delete('/:id', employeesController.deleteEmployee);
+router.delete(
+  '/:id',
+  param('id').isMongoId().withMessage('Invalid employee ID'),
+  handleValidationErrors,
+  employeesController.deleteEmployee
+);
 
 module.exports = router;
+

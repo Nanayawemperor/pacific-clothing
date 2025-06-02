@@ -19,11 +19,18 @@
   },
   "homepage": "https://github.com/Nanayawemperor/pacific-clothing#readme",
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "body-parser": "^2.2.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "express-openid-connect": "^2.18.1",
+    "express-session": "^1.18.1",
     "express-validator": "^7.2.1",
+    "googleapis": "^105.0.0",
     "mongodb": "^6.16.0",
+    "mongoose": "^8.15.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
