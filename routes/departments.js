@@ -3,14 +3,7 @@ const router = express.Router();
 const { body, param, validationResult } = require('express-validator');
 const departmentsController = require('../controllers/departments');
 
-// Middleware to handle validation errors
-const handleValidationErrors = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-};
+
 
 /**
  * @swagger
@@ -69,7 +62,6 @@ router.get('/', departmentsController.getAll);
 router.get(
   '/:id',
   param('id').isMongoId().withMessage('Invalid department ID'),
-  handleValidationErrors,
   departmentsController.getSingle
 );
 
@@ -97,7 +89,6 @@ router.post(
   '/',
   body('name').isString().notEmpty().withMessage('Department name is required'),
   body('description').optional().isString(),
-  handleValidationErrors,
   departmentsController.createDepartment
 );
 
@@ -135,7 +126,6 @@ router.put(
   param('id').isMongoId().withMessage('Invalid department ID'),
   body('name').optional().isString(),
   body('description').optional().isString(),
-  handleValidationErrors,
   departmentsController.updateDepartment
 );
 
@@ -165,7 +155,6 @@ router.put(
 router.delete(
   '/:id',
   param('id').isMongoId().withMessage('Invalid department ID'),
-  handleValidationErrors,
   departmentsController.deleteDepartment
 );
 
