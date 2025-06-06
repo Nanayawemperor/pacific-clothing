@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-require('dotenv');
+require('dotenv').config(); // Ensure dotenv is configured
+const createError = require('http-errors');
 
 const app = express();
 const mongodb = require('./data/database');
@@ -41,6 +42,19 @@ app.use((req, res, next) => {
 
 // ✅ Mount routes
 app.use('/', require('./routes'));
+
+// ✅ 404 handler
+app.use((req, res, next) => {
+  next(createError(404, 'Route not found'));
+});
+
+// ✅ Global error handler
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+    status: err.status || 500,
+    message: err.message || 'Internal Server Error'
+  });
+});
 
 // ✅ Start server and DB connection
 mongodb.initDb(err => {
