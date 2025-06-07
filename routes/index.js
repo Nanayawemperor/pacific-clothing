@@ -2,12 +2,6 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
-
-router.get('/', (req, res) => {
-    //#swagger.tags=['Hello from the routes!']
-  res.send('Hello from the routes!');
-});
-
 router.use('/employees', require('./employees'));
 router.use('/departments', require('./departments'));
 
@@ -20,6 +14,13 @@ router.get('/logout', function(req, res, next) {
     res.redirect('/');
   });
 });
+
+router.get('/', (req, res) => {
+    //#swagger.tags=['Hello from the routes!']
+  res.send('Hello from the routes!');
+});
+
+
 
 module.exports = router;
 
