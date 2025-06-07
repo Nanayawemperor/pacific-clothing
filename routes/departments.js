@@ -90,7 +90,10 @@ router.get(
 router.post(
   '/',
   body('name').isString().notEmpty().withMessage('Department name is required'),
-  body('description').optional().isString(), isAuthenticated,
+  body('manager').optional().isString().notEmpty().withMessage('Manager is required'), 
+  body('totalEmployees').isNumeric().withMessage('Number is required'),
+  body('location').isString().withMessage('Location is required'),
+  isAuthenticated,
   departmentsController.createDepartment
 );
 

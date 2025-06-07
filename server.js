@@ -26,20 +26,20 @@ const swaggerOptions = {
     components: {
       schemas: {
             Department: {
-          type: 'object',
-          properties: {
-            departmentName: {
-              type: 'string'
-            },
-            manager: {
-              type: 'string'
-            },
-            totalEmployees: {
-              type: 'integer'
-            },
-            location: {
-              type: 'string'
-            }
+              type: 'object',
+              properties: {
+              departmentName: {
+                type: 'string'
+              },
+              manager: {
+                type: 'string'
+              },
+              totalEmployees: {
+                type: 'integer'
+              },
+              location: {
+                type: 'string'
+              }
           }
         },
         Employee: {
@@ -52,7 +52,7 @@ const swaggerOptions = {
               type: 'string'
             },
             hireDate: {
-              type: "string"
+              type: 'string'
             },
             department: {
               type: 'string'
