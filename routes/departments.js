@@ -3,6 +3,8 @@ const router = express.Router();
 const { body, param, validationResult } = require('express-validator');
 const departmentsController = require('../controllers/departments');
 
+const { isAuthenticated } = require("../middleware/authenticate");
+
 
 
 /**
@@ -88,7 +90,7 @@ router.get(
 router.post(
   '/',
   body('name').isString().notEmpty().withMessage('Department name is required'),
-  body('description').optional().isString(),
+  body('description').optional().isString(), isAuthenticated,
   departmentsController.createDepartment
 );
 
@@ -125,7 +127,7 @@ router.put(
   '/:id',
   param('id').isMongoId().withMessage('Invalid department ID'),
   body('name').optional().isString(),
-  body('description').optional().isString(),
+  body('description').optional().isString(), isAuthenticated,
   departmentsController.updateDepartment
 );
 
@@ -154,7 +156,7 @@ router.put(
  */
 router.delete(
   '/:id',
-  param('id').isMongoId().withMessage('Invalid department ID'),
+  param('id').isMongoId().withMessage('Invalid department ID'), isAuthenticated,
   departmentsController.deleteDepartment
 );
 

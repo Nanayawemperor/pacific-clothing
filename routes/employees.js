@@ -3,6 +3,8 @@ const router = express.Router();
 const { body, param, validationResult } = require('express-validator');
 const employeesController = require('../controllers/employees');
 
+const { isAuthenticated } = require("../middleware/authenticate");
+
 // Middleware to handle validation errors
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -102,7 +104,7 @@ router.post(
   body('employmentStatus').isString().notEmpty().withMessage('Employment status is required'),
   body('role').isString().notEmpty().withMessage('Role is required'),
   body('address').isString().notEmpty().withMessage('Address is required'),
-  handleValidationErrors,
+  handleValidationErrors, isAuthenticated,
   employeesController.createEmployee
 );
 
@@ -145,7 +147,7 @@ router.put(
   body('employmentStatus').optional().isString(),
   body('role').optional().isString(),
   body('address').optional().isString(),
-  handleValidationErrors,
+  handleValidationErrors, isAuthenticated,
   employeesController.updateEmployee
 );
 
@@ -175,7 +177,7 @@ router.put(
 router.delete(
   '/:id',
   param('id').isMongoId().withMessage('Invalid employee ID'),
-  handleValidationErrors,
+  handleValidationErrors, isAuthenticated,
   employeesController.deleteEmployee
 );
 
