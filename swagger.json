@@ -310,6 +310,7 @@
     },
     "Department": {
       "type": "object",
+      "required": ["departmentName", "totalEmployees", "location"],
       "properties": {
         "departmentName": {
           "type": "string"

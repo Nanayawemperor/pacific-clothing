@@ -17,7 +17,7 @@ Content-Type: application/json
   }
 
 ### PUT department
-PUT http://localhost:10000/departments/683e290b3181644056caa973 HTTP/1.1
+PUT http://localhost:10000/departments/682e3fa0a06cf5069269e953 HTTP/1.1
 Content-Type: application/json
 
 {

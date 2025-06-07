@@ -5,7 +5,14 @@ const departmentsController = require('../controllers/departments');
 
 const { isAuthenticated } = require("../middleware/authenticate");
 
-
+// Middleware to handle validation errors
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
 
 /**
  * @swagger
@@ -63,7 +70,7 @@ router.get('/', departmentsController.getAll);
  */
 router.get(
   '/:id',
-  param('id').isMongoId().withMessage('Invalid department ID'),
+  param('id').isMongoId().withMessage('Invalid department ID'),handleValidationErrors,
   departmentsController.getSingle
 );
 
@@ -89,10 +96,10 @@ router.get(
  */
 router.post(
   '/',
-  body('name').isString().notEmpty().withMessage('Department name is required'),
+  body('departmentName').isString().notEmpty().withMessage('Department name is required'),
   body('manager').optional().isString().notEmpty().withMessage('Manager is required'), 
   body('totalEmployees').isNumeric().withMessage('Number is required'),
-  body('location').isString().withMessage('Location is required'),
+  body('location').isString().withMessage('Location is required'), handleValidationErrors,
   isAuthenticated,
   departmentsController.createDepartment
 );
@@ -130,7 +137,7 @@ router.put(
   '/:id',
   param('id').isMongoId().withMessage('Invalid department ID'),
   body('name').optional().isString(),
-  body('description').optional().isString(), isAuthenticated,
+  body('description').optional().isString(),handleValidationErrors, isAuthenticated,
   departmentsController.updateDepartment
 );
 
@@ -159,7 +166,7 @@ router.put(
  */
 router.delete(
   '/:id',
-  param('id').isMongoId().withMessage('Invalid department ID'), isAuthenticated,
+  param('id').isMongoId().withMessage('Invalid department ID'),handleValidationErrors, isAuthenticated,
   departmentsController.deleteDepartment
 );
 
