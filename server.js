@@ -23,6 +23,53 @@ const swaggerOptions = {
       description: 'API for managing Pacific Clothing data',
     },
     servers: [{ url: `http://localhost:${port}` }],
+    components: {
+      schemas: {
+            Department: {
+          "type": "object",
+          "properties": {
+            "departmentName": {
+              "type": "string"
+            },
+            "manager": {
+              "type": "string"
+            },
+            "totalEmployees": {
+              "type": "integer"
+            },
+            "location": {
+              "type": "string"
+            }
+          }
+        },
+        Employee: {
+          "type": "object",
+          "properties": {
+            "fullName": {
+              "type": "string"
+            },
+            "phoneNumber": {
+              "type": "string"
+            },
+            "hireDate": {
+              "type": "string"
+            },
+            "department": {
+              "type": "string"
+            },
+            "employmentStatus": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
   },
   apis: ['./routes/*.js'],
 };
